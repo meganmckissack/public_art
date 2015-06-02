@@ -29,52 +29,62 @@ The train.column.types simplifies the data cleaning for the analysis.
 ```{r, echo=FALSE, warning=FALSE}
 
         file.path <- "https://raw.githubusercontent.com/ww44ss/public_art/master/"
-        data.file <- "public_art.csv"
+        data.file <- "public_art_edited.csv"
+        data.zip <- "public_art.zip"
         missing.types <- c("NA", "")
 
-        train.column.types <- c('integer',   # record_id
-                                'character',    # artist 
-                                'character',    # title
-                                'character',         # date
-                                'factor',       # medium
-                                'factor',       # discipline
+        column.types <- c('integer',   # record_id
+                                'factor',    # artist 
+                                'factor',    # title
+                                'factor',    # date
+                                'character',       # medium
+                                'character',       # discipline
                                 'character',    # dimensions
-                                'charcter',     # funding_source
+                                'factor',     # funding_source
                                 'character',    # location
                                 'character',    # street
-                                'character',    # city
-                                'factor',       # zipcode
+                                'factor',    # city
+                                'factor',        #state
+                                'factor',    # zipcode
                                 "numeric",      # latitude
                                 "numeric",      # longitude
                                 "character",    # description
                                 "character",    # image URL
                                 "character",    # detail URL
-                                "character"     # date_modified
+                                "factor"     # date_modified
         )
 
-        test.column.types <- train.column.types[-2]     # # no Survived column in test.csv
+    
 ```
-
 
 Now we can get the data quickly
 
 ```{r, echo=3:7}
-        setwd("/Users/winstonsaunders/Documents/TitanicKaggle")
         ##Okay let's get the data
-        training <- readData(Titanic.path, train.data.file, train.column.types, missing.types)
-        testing <-  readData(Titanic.path, test.data.file, test.column.types, missing.types)
-
-        trainingRaw<-training
-        testingRaw<-testing
-
+        art <- readData(file.path, data.file, column.types, missing.types)
+        
 ```
 
+```{r "data cleaning", echo=FALSE}
+## we have a few fields to clean up a bit
+##
+## Year
+## inspection shows column contains mostly years, but let's just polish it up a bit. 
+
+year_clean<-function(x) {
+                        x<-gsub("20th century", "1975", x)      ## approximate year
+                        x<-gsub("19th century", "1875", x)      ## approximate year
+                        x<-gsub("18th century", "1775", x)      ## approximate year
+                        x<-sub("0.9994979", "1999", x)          ## fix this line with correct date
+                        x<-gsub(" ", "", x)                     ## eliminate spaces
+                        x<-gsub('[[:alpha:]]+', "", x)          ## get rid of letters
+                        x<-gsub("[[:punct:]]+", "", x)          ## eliminate punctuation marks
+                        x<-substring(x, 1, 4)                   ## keep first 4 digits as year
+                        return(x)
+                         }
+
+
+
+art$year<-as.numeric(year_clean(art$date))  ## clean and convert to integer
+
 ```
-
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
