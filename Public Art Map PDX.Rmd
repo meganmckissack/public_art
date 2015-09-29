@@ -1,5 +1,5 @@
 ---
-title: "Public Art Mapping in Portland"
+title: "Public Art Map Portland"
 author: "Winston Saunders"
 date: "May 31, 2015"
 output: html_document
@@ -71,7 +71,7 @@ Now we can get the data quickly
 ## Year
 ## inspection shows column contains mostly years, but let's just polish it up a bit. 
 
-year_clean<-function(x) {
+        year_clean<-function(x) {
                         x<-gsub("20th century", "1975", x)      ## approximate year
                         x<-gsub("19th century", "1875", x)      ## approximate year
                         x<-gsub("18th century", "1775", x)      ## approximate year
@@ -85,6 +85,44 @@ year_clean<-function(x) {
 
 
 
-art$year<-as.numeric(year_clean(art$date))  ## clean and convert to integer
+    art$year<-as.numeric(year_clean(art$date))  ## clean and convert to integer
+
+```
+
+```{r}
+
+require(ggmap)
+require(mapproj)
+
+##Subset data by crime
+## here focus on only top crimes
+        ##get map data
+        map <- get_map(source="google", maptype="roadmap", location = 'Portland', zoom = 11)
+        ##generate map
+        map1 <- ggmap(map) 
+
+        ## 
+        map1<-map1 + geom_point(aes(x = art$lng, y = art$lat), data = art, alpha = .5, color="red", size = 3)
+        print(map1)
+
+```
+
+A more detailed zoom of downtown
+
+```{r}
+
+require(ggmap)
+require(mapproj)
+
+##Subset data by crime
+## here focus on only top crimes
+        ##get map data
+        map <- get_map(source="google", maptype="roadmap", location = 'Portland', zoom = 15)
+        ##generate map
+        map1 <- ggmap(map) 
+
+        ## 
+        map1<-map1 + geom_point(aes(x = art$lng, y = art$lat), data = art, alpha = .5, color="red", size = 3)
+        print(map1)
 
 ```
