@@ -7,10 +7,12 @@ output:
         theme: united
 ---
 
-##SUMMARY:
-The locations of public art in Portland, Oregon, are avail on the [Civic Apps](http://www.civicapps.org/datasets/public-art). Sadly, the data do not appear to be updated regularly. Nevertheless this could be a valuable public resource. 
+###SUMMARY:
+The locations of public art in Portland, Oregon, as avail on the [Civic Apps](http://www.civicapps.org/datasets/public-art) are overlayed with a map as an aid to locating artworks in the City.
 
-To get the data use the following function. The data are read direcntly from my github repo.
+###DATA
+
+Note that the raw data are not entirely clean, so I had to edit and clean the data to complete the mapping, including looking up the GPS locations of some addresses. The cleaned data are stored on and read directly from my github repo.
 
 ```{r "get data", echo=9:13, warning=FALSE}        
         ## define a read_data function which will be used to pull data from my gitbhub acct
@@ -28,10 +30,8 @@ To get the data use the following function. The data are read direcntly from my 
 
 ```
 
-The variables for the function are defined as below. 
-The train.column.types simplifies the data cleaning for analysis.
 
-```{r, echo=2, warning=FALSE}
+```{r, echo=2:5, warning=FALSE}
 
         file.path <- "https://raw.githubusercontent.com/ww44ss/public_art/master/"
         data.file <- "public_art_edited.csv"
@@ -62,9 +62,10 @@ The train.column.types simplifies the data cleaning for analysis.
     
 ```
 
+ 
 Now we can get the data quickly
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, warning=FALSE}
         art <- readData(file.path, data.file, column.types, missing.types)
 ```
 
@@ -92,12 +93,12 @@ Now we can get the data quickly
 
 ```
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 require(ggmap)
 require(mapproj)
 
-##Subset data by crime
+
 ## here focus on only top crimes
         ##get map data
         map <- get_map(source="google", maptype="roadmap", location = 'Portland', zoom = 11)
@@ -129,3 +130,5 @@ require(mapproj)
         print(map1)
 
 ```
+
+In the future I'll make this interactive. 
